@@ -1,0 +1,1010 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Pet Footprint - Climate Comedy by Greenpeace</title>
+    <script src="https://cdn.tailwindcss.com/3.4.16"></script>
+    <script>tailwind.config={theme:{extend:{colors:{primary:'#8E6FF7',secondary:'#FF6B6B'},borderRadius:{'none':'0px','sm':'4px',DEFAULT:'8px','md':'12px','lg':'16px','xl':'20px','2xl':'24px','3xl':'32px','full':'9999px','button':'8px'}}}}</script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Pacifico&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/remixicon@4.5.0/fonts/remixicon.css" rel="stylesheet">
+    <style>
+        :where([class^="ri-"])::before { content: "\f3c2"; }
+        body {
+            font-family: 'Montserrat', sans-serif;
+            background-color: #121212;
+            color: #ffffff;
+        }
+        .countdown-item {
+            background: rgba(142, 111, 247, 0.15);
+            backdrop-filter: blur(5px);
+        }
+        .progress-bar {
+            position: relative;
+            height: 24px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 12px;
+            overflow: hidden;
+        }
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #8E6FF7 0%, #FF6B6B 100%);
+            border-radius: 12px;
+            transition: width 1s ease-in-out;
+        }
+        .tier-card {
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(10px);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+        .tier-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px rgba(142, 111, 247, 0.2);
+        }
+        .featured-tier {
+            border: 2px solid #8E6FF7;
+            background: rgba(142, 111, 247, 0.1);
+        }
+        input[type="range"] {
+            -webkit-appearance: none;
+            height: 8px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 4px;
+            outline: none;
+        }
+        input[type="range"]::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            width: 20px;
+            height: 20px;
+            background: #8E6FF7;
+            border-radius: 50%;
+            cursor: pointer;
+        }
+        .custom-checkbox {
+            position: relative;
+            padding-left: 35px;
+            cursor: pointer;
+            user-select: none;
+        }
+        .custom-checkbox input {
+            position: absolute;
+            opacity: 0;
+            cursor: pointer;
+            height: 0;
+            width: 0;
+        }
+        .checkmark {
+            position: absolute;
+            top: 0;
+            left: 0;
+            height: 24px;
+            width: 24px;
+            background-color: rgba(255, 255, 255, 0.1);
+            border-radius: 4px;
+        }
+        .custom-checkbox:hover input ~ .checkmark {
+            background-color: rgba(255, 255, 255, 0.2);
+        }
+        .custom-checkbox input:checked ~ .checkmark {
+            background-color: #8E6FF7;
+        }
+        .checkmark:after {
+            content: "";
+            position: absolute;
+            display: none;
+        }
+        .custom-checkbox input:checked ~ .checkmark:after {
+            display: block;
+        }
+        .custom-checkbox .checkmark:after {
+            left: 9px;
+            top: 5px;
+            width: 6px;
+            height: 12px;
+            border: solid white;
+            border-width: 0 2px 2px 0;
+            transform: rotate(45deg);
+        }
+        .accordion-content {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.3s ease;
+        }
+        .accordion-content.active {
+            max-height: 500px;
+        }
+        .floating-donate {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            z-index: 100;
+            animation: pulse 2s infinite;
+        }
+        @keyframes pulse {
+            0% {
+                transform: scale(1);
+                box-shadow: 0 0 0 0 rgba(142, 111, 247, 0.7);
+            }
+            70% {
+                transform: scale(1.05);
+                box-shadow: 0 0 0 10px rgba(142, 111, 247, 0);
+            }
+            100% {
+                transform: scale(1);
+                box-shadow: 0 0 0 0 rgba(142, 111, 247, 0);
+            }
+        }
+        .video-container {
+            position: relative;
+            overflow: hidden;
+            border-radius: 16px;
+        }
+        .video-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.4);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            cursor: pointer;
+        }
+        .play-button {
+            width: 80px;
+            height: 80px;
+            background: rgba(142, 111, 247, 0.8);
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            transition: transform 0.3s ease, background 0.3s ease;
+        }
+        .play-button:hover {
+            transform: scale(1.1);
+            background: rgba(142, 111, 247, 1);
+        }
+        .custom-switch {
+            position: relative;
+            display: inline-block;
+            width: 60px;
+            height: 34px;
+        }
+        .custom-switch input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+        .switch-slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: rgba(255, 255, 255, 0.1);
+            transition: .4s;
+            border-radius: 34px;
+        }
+        .switch-slider:before {
+            position: absolute;
+            content: "";
+            height: 26px;
+            width: 26px;
+            left: 4px;
+            bottom: 4px;
+            background-color: white;
+            transition: .4s;
+            border-radius: 50%;
+        }
+        input:checked + .switch-slider {
+            background-color: #8E6FF7;
+        }
+        input:checked + .switch-slider:before {
+            transform: translateX(26px);
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header class="fixed top-0 left-0 w-full bg-black bg-opacity-80 backdrop-blur-md z-50">
+        <div class="container mx-auto px-4 py-4 flex justify-between items-center">
+            <a href="#" class="text-3xl font-['Pacifico'] text-white flex items-center gap-2">
+                <div class="w-10 h-10 flex items-center justify-center bg-primary rounded-full">
+                    <i class="ri-footprint-line text-white ri-lg"></i>
+                </div>
+                My Pet Footprint
+            </a>
+            
+            <nav class="hidden md:flex items-center space-x-6">
+                <a href="#" class="text-white hover:text-primary transition-colors font-medium">Home</a>
+                <a href="#about" class="text-white hover:text-primary transition-colors font-medium">About</a>
+                <a href="#watch" class="text-white hover:text-primary transition-colors font-medium">Watch</a>
+                <a href="#donate" class="text-white hover:text-primary transition-colors font-medium">Donate</a>
+                <a href="#faq" class="text-white hover:text-primary transition-colors font-medium">FAQ</a>
+                <button class="bg-primary text-white px-6 py-2 !rounded-button font-semibold hover:bg-opacity-90 transition-all whitespace-nowrap">Donate Now</button>
+            </nav>
+            
+            <button class="md:hidden w-10 h-10 flex items-center justify-center">
+                <i class="ri-menu-line text-white ri-2x"></i>
+            </button>
+        </div>
+    </header>
+
+    <!-- Countdown Banner -->
+    <div class="bg-gradient-to-r from-primary to-secondary py-2 mt-16">
+        <div class="container mx-auto px-4 flex justify-center items-center">
+            <div class="flex items-center space-x-2 md:space-x-6">
+                <p class="text-white font-bold text-sm md:text-base">Time Left to Save the Planet:</p>
+                <div class="flex space-x-2 md:space-x-4">
+                    <div class="countdown-item px-2 md:px-4 py-1 rounded-md text-center">
+                        <span class="text-white font-bold text-sm md:text-xl">42</span>
+                        <p class="text-white text-xs md:text-sm">Days</p>
+                    </div>
+                    <div class="countdown-item px-2 md:px-4 py-1 rounded-md text-center">
+                        <span class="text-white font-bold text-sm md:text-xl">12</span>
+                        <p class="text-white text-xs md:text-sm">Hours</p>
+                    </div>
+                    <div class="countdown-item px-2 md:px-4 py-1 rounded-md text-center">
+                        <span class="text-white font-bold text-sm md:text-xl">37</span>
+                        <p class="text-white text-xs md:text-sm">Minutes</p>
+                    </div>
+                    <div class="countdown-item px-2 md:px-4 py-1 rounded-md text-center">
+                        <span class="text-white font-bold text-sm md:text-xl">19</span>
+                        <p class="text-white text-xs md:text-sm">Seconds</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Hero Section -->
+    <section class="relative w-full" style="background-image: url('https://readdy.ai/api/search-image?query=Satirical%20climate%20comedy%20scene%20with%20colorful%20cartoon%20characters%20standing%20on%20a%20melting%20earth%2C%20with%20oil%20rigs%20and%20corporate%20executives%20in%20the%20background.%20The%20scene%20should%20be%20bright%2C%20colorful%20and%20humorous%2C%20with%20a%20gradient%20from%20dark%20to%20light%20on%20the%20left%20side%20to%20allow%20text%20to%20be%20clearly%20visible.%20Rick%20and%20Morty%20inspired%20art%20style%20with%20bold%20outlines%20and%20vibrant%20colors.&width=1920&height=1080&seq=12345&orientation=landscape'); background-size: cover; background-position: center;">
+        <div class="absolute inset-0 bg-gradient-to-r from-black via-black/70 to-transparent"></div>
+        <div class="container mx-auto px-4 py-20 md:py-32 relative">
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-8 items-center">
+                <div>
+                    <h1 class="text-4xl md:text-6xl font-extrabold mb-6 leading-tight text-white">Climate Comedy That Big Oil Doesn't Want You to See</h1>
+                    <p class="text-xl md:text-2xl mb-8 text-gray-200">An animated satire exposing fossil fuel corruption through humor and wit. Because sometimes you need to laugh to keep from crying.</p>
+                    <div class="flex flex-wrap gap-4">
+                        <button class="bg-primary text-white px-8 py-3 !rounded-button font-bold text-lg hover:bg-opacity-90 transition-all whitespace-nowrap">Donate Now</button>
+                        <button class="bg-white/10 backdrop-blur-sm text-white border border-white/30 px-8 py-3 !rounded-button font-bold text-lg hover:bg-white/20 transition-all whitespace-nowrap flex items-center gap-2">
+                            <i class="ri-play-circle-line"></i> Watch Trailer
+                        </button>
+                    </div>
+                </div>
+                <div></div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Campaign Progress -->
+    <section id="progress" class="py-16 bg-black">
+        <div class="container mx-auto px-4">
+            <div class="max-w-4xl mx-auto">
+                <div class="text-center mb-12">
+                    <h2 class="text-3xl md:text-4xl font-bold mb-4">Our Funding Progress</h2>
+                    <p class="text-xl text-gray-300">Help us reach our goal to create a full season of climate comedy</p>
+                </div>
+                
+                <div class="mb-8">
+                    <div class="flex justify-between mb-2">
+                        <span class="text-2xl font-bold text-primary">$187,450</span>
+                        <span class="text-xl font-medium text-gray-400">of $250,000 goal</span>
+                    </div>
+                    <div class="progress-bar">
+                        <div class="progress-fill" style="width: 75%;"></div>
+                    </div>
+                </div>
+                
+                <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-12">
+                    <div class="bg-gray-900 p-4 rounded-lg text-center">
+                        <p class="text-3xl font-bold text-white mb-1">1,842</p>
+                        <p class="text-gray-400">Backers</p>
+                    </div>
+                    <div class="bg-gray-900 p-4 rounded-lg text-center">
+                        <p class="text-3xl font-bold text-white mb-1">42</p>
+                        <p class="text-gray-400">Days Left</p>
+                    </div>
+                    <div class="bg-gray-900 p-4 rounded-lg text-center">
+                        <p class="text-3xl font-bold text-white mb-1">75%</p>
+                        <p class="text-gray-400">Funded</p>
+                    </div>
+                    <div class="bg-gray-900 p-4 rounded-lg text-center">
+                        <p class="text-3xl font-bold text-primary mb-1">$102</p>
+                        <p class="text-gray-400">Avg. Donation</p>
+                    </div>
+                </div>
+                
+                <div class="mb-12">
+                    <h3 class="text-2xl font-bold mb-6">Stretch Goals</h3>
+                    <div class="space-y-6">
+                        <div>
+                            <div class="flex justify-between mb-2">
+                                <span class="font-medium">Pilot Episode</span>
+                                <span class="font-medium text-green-400">UNLOCKED!</span>
+                            </div>
+                            <div class="progress-bar">
+                                <div class="progress-fill" style="width: 100%; background: #10B981;"></div>
+                            </div>
+                        </div>
+                        <div>
+                            <div class="flex justify-between mb-2">
+                                <span class="font-medium">Full Season Production (6 Episodes)</span>
+                                <span class="font-medium">$250,000</span>
+                            </div>
+                            <div class="progress-bar">
+                                <div class="progress-fill" style="width: 75%;"></div>
+                            </div>
+                        </div>
+                        <div>
+                            <div class="flex justify-between mb-2">
+                                <span class="font-medium">Behind-the-Scenes Documentary</span>
+                                <span class="font-medium">$300,000</span>
+                            </div>
+                            <div class="progress-bar">
+                                <div class="progress-fill" style="width: 62%;"></div>
+                            </div>
+                        </div>
+                        <div>
+                            <div class="flex justify-between mb-2">
+                                <span class="font-medium">Extended Season (10 Episodes)</span>
+                                <span class="font-medium">$400,000</span>
+                            </div>
+                            <div class="progress-bar">
+                                <div class="progress-fill" style="width: 47%;"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Watch Teaser -->
+    <section id="watch" class="py-16 bg-gray-900">
+        <div class="container mx-auto px-4">
+            <div class="text-center mb-12">
+                <h2 class="text-3xl md:text-4xl font-bold mb-4">Watch Our Teaser</h2>
+                <p class="text-xl text-gray-300 max-w-3xl mx-auto">Get a glimpse of our satirical take on climate change and the corporations behind it</p>
+            </div>
+            
+            <div class="video-container max-w-4xl mx-auto">
+                <img src="https://readdy.ai/api/search-image?query=Animated%20scene%20from%20a%20satirical%20climate%20comedy%20showing%20cartoon%20characters%20in%20a%20corporate%20boardroom%20with%20oil%20executives%20laughing%20while%20the%20earth%20melts%20in%20the%20background.%20The%20style%20is%20similar%20to%20Rick%20and%20Morty%20with%20bold%20outlines%20and%20vibrant%20colors.%20The%20scene%20should%20be%20humorous%20but%20with%20clear%20environmental%20messaging.&width=1280&height=720&seq=12346&orientation=landscape" alt="Video Teaser" class="w-full h-auto">
+                <div class="video-overlay">
+                    <div class="play-button">
+                        <i class="ri-play-fill text-white ri-2x"></i>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="mt-12 text-center">
+                <p class="text-gray-300 mb-6">Help us bring this project to life by supporting our campaign</p>
+                <button class="bg-primary text-white px-8 py-3 !rounded-button font-bold text-lg hover:bg-opacity-90 transition-all whitespace-nowrap">Donate Now</button>
+            </div>
+        </div>
+    </section>
+
+    <!-- About Section -->
+    <section id="about" class="py-16 bg-black">
+        <div class="container mx-auto px-4">
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-12 items-center">
+                <div>
+                    <h2 class="text-3xl md:text-4xl font-bold mb-6">About My Pet Footprint</h2>
+                    <p class="text-xl mb-6 text-gray-300">My Pet Footprint is an animated climate comedy series that uses humor to expose the fossil fuel industry's role in creating climate guilt while avoiding responsibility.</p>
+                    <p class="text-xl mb-6 text-gray-300">Think "Don't Look Up" meets "Rick and Morty" - we're creating biting satire that makes you laugh while making you think.</p>
+                    <p class="text-xl mb-8 text-gray-300">Presented by Greenpeace, this independent series aims to shift the climate conversation from individual guilt to corporate accountability.</p>
+                    <div class="flex flex-wrap gap-4">
+                        <button class="bg-white/10 backdrop-blur-sm text-white border border-white/30 px-6 py-3 !rounded-button font-bold hover:bg-white/20 transition-all whitespace-nowrap">Our Team</button>
+                        <button class="bg-white/10 backdrop-blur-sm text-white border border-white/30 px-6 py-3 !rounded-button font-bold hover:bg-white/20 transition-all whitespace-nowrap">Production Plan</button>
+                    </div>
+                </div>
+                <div>
+                    <img src="https://readdy.ai/api/search-image?query=Concept%20art%20for%20an%20animated%20climate%20comedy%20series%20showing%20diverse%20cartoon%20characters%20with%20exaggerated%20expressions.%20The%20style%20is%20similar%20to%20Rick%20and%20Morty%20with%20bold%20outlines.%20The%20image%20shows%20character%20design%20sheets%20with%20various%20poses%20and%20expressions%2C%20along%20with%20background%20art%20concepts.%20The%20artwork%20should%20look%20professional%20and%20ready%20for%20animation%20production.&width=800&height=800&seq=12347&orientation=squarish" alt="Concept Art" class="w-full h-auto rounded-lg shadow-2xl">
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Donation Tiers -->
+    <section id="donate" class="py-16 bg-gray-900">
+        <div class="container mx-auto px-4">
+            <div class="text-center mb-12">
+                <h2 class="text-3xl md:text-4xl font-bold mb-4">Support Our Climate Comedy</h2>
+                <p class="text-xl text-gray-300 max-w-3xl mx-auto">Choose your donation tier and help us create comedy that exposes fossil fuel corruption</p>
+            </div>
+            
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6 max-w-5xl mx-auto">
+                <div class="tier-card rounded-lg p-6">
+                    <h3 class="text-2xl font-bold mb-2">Climate Curious</h3>
+                    <p class="text-4xl font-bold text-primary mb-4">$25</p>
+                    <ul class="space-y-3 mb-6">
+                        <li class="flex items-start">
+                            <i class="ri-check-line text-primary ri-lg mt-1 mr-2"></i>
+                            <span>Early access to pilot episode</span>
+                        </li>
+                        <li class="flex items-start">
+                            <i class="ri-check-line text-primary ri-lg mt-1 mr-2"></i>
+                            <span>Name in credits as supporter</span>
+                        </li>
+                        <li class="flex items-start">
+                            <i class="ri-check-line text-primary ri-lg mt-1 mr-2"></i>
+                            <span>Exclusive digital wallpapers</span>
+                        </li>
+                    </ul>
+                    <button class="w-full bg-white/10 text-white py-3 !rounded-button font-bold hover:bg-white/20 transition-all whitespace-nowrap">Select</button>
+                </div>
+                
+                <div class="tier-card featured-tier rounded-lg p-6">
+                    <div class="bg-primary text-white text-sm font-bold py-1 px-4 rounded-full inline-block mb-2">MOST POPULAR</div>
+                    <h3 class="text-2xl font-bold mb-2">Carbon Crusader</h3>
+                    <p class="text-4xl font-bold text-primary mb-4">$100</p>
+                    <ul class="space-y-3 mb-6">
+                        <li class="flex items-start">
+                            <i class="ri-check-line text-primary ri-lg mt-1 mr-2"></i>
+                            <span>All previous rewards</span>
+                        </li>
+                        <li class="flex items-start">
+                            <i class="ri-check-line text-primary ri-lg mt-1 mr-2"></i>
+                            <span>Limited edition digital art book</span>
+                        </li>
+                        <li class="flex items-start">
+                            <i class="ri-check-line text-primary ri-lg mt-1 mr-2"></i>
+                            <span>Exclusive behind-the-scenes content</span>
+                        </li>
+                        <li class="flex items-start">
+                            <i class="ri-check-line text-primary ri-lg mt-1 mr-2"></i>
+                            <span>Access to creator Q&A sessions</span>
+                        </li>
+                    </ul>
+                    <button class="w-full bg-primary text-white py-3 !rounded-button font-bold hover:bg-opacity-90 transition-all whitespace-nowrap">Select</button>
+                </div>
+                
+                <div class="tier-card rounded-lg p-6">
+                    <h3 class="text-2xl font-bold mb-2">Fossil Fool Fighter</h3>
+                    <p class="text-4xl font-bold text-primary mb-4">$250</p>
+                    <ul class="space-y-3 mb-6">
+                        <li class="flex items-start">
+                            <i class="ri-check-line text-primary ri-lg mt-1 mr-2"></i>
+                            <span>All previous rewards</span>
+                        </li>
+                        <li class="flex items-start">
+                            <i class="ri-check-line text-primary ri-lg mt-1 mr-2"></i>
+                            <span>Personalized character cameo</span>
+                        </li>
+                        <li class="flex items-start">
+                            <i class="ri-check-line text-primary ri-lg mt-1 mr-2"></i>
+                            <span>Limited edition merchandise pack</span>
+                        </li>
+                        <li class="flex items-start">
+                            <i class="ri-check-line text-primary ri-lg mt-1 mr-2"></i>
+                            <span>Producer credit in all episodes</span>
+                        </li>
+                    </ul>
+                    <button class="w-full bg-white/10 text-white py-3 !rounded-button font-bold hover:bg-white/20 transition-all whitespace-nowrap">Select</button>
+                </div>
+            </div>
+            
+            <div class="mt-12 max-w-3xl mx-auto">
+                <div class="bg-gray-800 rounded-lg p-6">
+                    <h3 class="text-xl font-bold mb-4">Custom Donation</h3>
+                    <div class="mb-6">
+                        <label for="custom-amount" class="block mb-2">Amount</label>
+                        <div class="flex items-center gap-4">
+                            <input type="range" id="custom-amount" min="10" max="1000" value="100" class="w-full">
+                            <div class="bg-gray-700 px-4 py-2 rounded-md min-w-24 text-center">
+                                <span id="amount-display">$100</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="mb-6">
+                        <label class="custom-checkbox mb-4 block">
+                            <input type="checkbox">
+                            <span class="checkmark"></span>
+                            Make this a monthly donation
+                        </label>
+                        <label class="custom-checkbox block">
+                            <input type="checkbox">
+                            <span class="checkmark"></span>
+                            Donate anonymously
+                        </label>
+                    </div>
+                    <button class="w-full bg-primary text-white py-3 !rounded-button font-bold hover:bg-opacity-90 transition-all whitespace-nowrap">Donate Now</button>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Why This Matters -->
+    <section class="py-16 bg-black">
+        <div class="container mx-auto px-4">
+            <div class="text-center mb-12">
+                <h2 class="text-3xl md:text-4xl font-bold mb-4">Why This Matters</h2>
+                <p class="text-xl text-gray-300 max-w-3xl mx-auto">The fossil fuel industry has spent decades shifting blame to individuals while avoiding accountability</p>
+            </div>
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-12 max-w-5xl mx-auto">
+                <div class="bg-gray-900 rounded-lg p-6">
+                    <h3 class="text-2xl font-bold mb-6 flex items-center gap-2">
+                        <i class="ri-oil-fill text-red-500 ri-lg"></i>
+                        Their Story
+                    </h3>
+                    <div class="space-y-4">
+                        <div class="flex items-start gap-4">
+                            <div class="w-12 h-12 flex items-center justify-center bg-red-500/20 rounded-full flex-shrink-0">
+                                <i class="ri-footprint-line text-red-400 ri-lg"></i>
+                            </div>
+                            <div>
+                                <h4 class="font-bold mb-1">It's Your Carbon Footprint</h4>
+                                <p class="text-gray-400">The term "carbon footprint" was popularized by BP in a $100 million campaign to shift responsibility to individuals.</p>
+                            </div>
+                        </div>
+                        <div class="flex items-start gap-4">
+                            <div class="w-12 h-12 flex items-center justify-center bg-red-500/20 rounded-full flex-shrink-0">
+                                <i class="ri-recycle-line text-red-400 ri-lg"></i>
+                            </div>
+                            <div>
+                                <h4 class="font-bold mb-1">Plastic Recycling Myth</h4>
+                                <p class="text-gray-400">Oil companies promoted plastic recycling while knowing most plastic cannot be recycled effectively.</p>
+                            </div>
+                        </div>
+                        <div class="flex items-start gap-4">
+                            <div class="w-12 h-12 flex items-center justify-center bg-red-500/20 rounded-full flex-shrink-0">
+                                <i class="ri-advertisement-line text-red-400 ri-lg"></i>
+                            </div>
+                            <div>
+                                <h4 class="font-bold mb-1">Greenwashing Campaigns</h4>
+                                <p class="text-gray-400">Fossil fuel companies spend millions on ads about their "green initiatives" while expanding fossil fuel production.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="bg-gray-900 rounded-lg p-6">
+                    <h3 class="text-2xl font-bold mb-6 flex items-center gap-2">
+                        <i class="ri-earth-line text-green-500 ri-lg"></i>
+                        The Reality
+                    </h3>
+                    <div class="space-y-4">
+                        <div class="flex items-start gap-4">
+                            <div class="w-12 h-12 flex items-center justify-center bg-green-500/20 rounded-full flex-shrink-0">
+                                <i class="ri-building-line text-green-400 ri-lg"></i>
+                            </div>
+                            <div>
+                                <h4 class="font-bold mb-1">Corporate Emissions</h4>
+                                <p class="text-gray-400">Just 100 companies are responsible for 71% of global emissions since 1988, according to the Carbon Majors Report.</p>
+                            </div>
+                        </div>
+                        <div class="flex items-start gap-4">
+                            <div class="w-12 h-12 flex items-center justify-center bg-green-500/20 rounded-full flex-shrink-0">
+                                <i class="ri-file-paper-2-line text-green-400 ri-lg"></i>
+                            </div>
+                            <div>
+                                <h4 class="font-bold mb-1">Decades of Deception</h4>
+                                <p class="text-gray-400">Internal documents show oil companies knew about climate change since the 1970s but funded denial campaigns.</p>
+                            </div>
+                        </div>
+                        <div class="flex items-start gap-4">
+                            <div class="w-12 h-12 flex items-center justify-center bg-green-500/20 rounded-full flex-shrink-0">
+                                <i class="ri-government-line text-green-400 ri-lg"></i>
+                            </div>
+                            <div>
+                                <h4 class="font-bold mb-1">Policy Obstruction</h4>
+                                <p class="text-gray-400">The fossil fuel industry spends over $200 million annually lobbying against climate policies in the US alone.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="mt-12 text-center">
+                <p class="text-xl text-gray-300 mb-6 max-w-3xl mx-auto">Our comedy series aims to expose these tactics through humor and help shift the conversation back to corporate accountability</p>
+                <button class="bg-primary text-white px-8 py-3 !rounded-button font-bold text-lg hover:bg-opacity-90 transition-all whitespace-nowrap">Support Our Mission</button>
+            </div>
+        </div>
+    </section>
+
+    <!-- Behind The Scenes -->
+    <section class="py-16 bg-gray-900">
+        <div class="container mx-auto px-4">
+            <div class="text-center mb-12">
+                <h2 class="text-3xl md:text-4xl font-bold mb-4">Behind The Scenes</h2>
+                <p class="text-xl text-gray-300 max-w-3xl mx-auto">Get a glimpse of our creative process and the team bringing this project to life</p>
+            </div>
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 max-w-5xl mx-auto">
+                <div>
+                    <img src="https://readdy.ai/api/search-image?query=Behind%20the%20scenes%20of%20an%20animated%20climate%20comedy%20production%20showing%20artists%20working%20on%20character%20designs%20in%20a%20studio%20environment.%20The%20image%20should%20show%20computer%20screens%20with%20animation%20software%20open%20displaying%20cartoon%20characters%20in%20a%20Rick%20and%20Morty%20inspired%20style.%20The%20scene%20should%20look%20professional%20and%20creative%20with%20artists%20collaborating.&width=600&height=400&seq=12348&orientation=landscape" alt="Behind the Scenes" class="w-full h-64 object-cover object-top rounded-lg mb-4">
+                    <h3 class="text-xl font-bold mb-2">Character Design</h3>
+                    <p class="text-gray-400">Our artists creating the satirical characters that will populate our climate comedy universe</p>
+                </div>
+                <div>
+                    <img src="https://readdy.ai/api/search-image?query=Voice%20recording%20session%20for%20an%20animated%20climate%20comedy%20with%20voice%20actors%20in%20a%20professional%20recording%20studio%20with%20microphones%20and%20sound%20equipment.%20The%20image%20should%20show%20script%20pages%20visible%20and%20monitors%20displaying%20animated%20character%20reference%20sheets%20in%20a%20Rick%20and%20Morty%20inspired%20style.%20The%20scene%20should%20look%20professional%20and%20creative.&width=600&height=400&seq=12349&orientation=landscape" alt="Voice Recording" class="w-full h-64 object-cover object-top rounded-lg mb-4">
+                    <h3 class="text-xl font-bold mb-2">Voice Recording</h3>
+                    <p class="text-gray-400">Voice actors bringing our characters to life with witty dialogue and satirical performances</p>
+                </div>
+                <div>
+                    <img src="https://readdy.ai/api/search-image?query=Storyboard%20session%20for%20an%20animated%20climate%20comedy%20with%20artists%20discussing%20scene%20layouts%20pinned%20to%20a%20wall.%20The%20storyboards%20should%20show%20cartoon%20characters%20in%20a%20Rick%20and%20Morty%20inspired%20style%20with%20bold%20outlines.%20The%20scene%20should%20include%20whiteboards%20with%20plot%20points%20and%20satirical%20climate%20themes%20written%20on%20them.%20The%20environment%20should%20look%20creative%20and%20professional.&width=600&height=400&seq=12350&orientation=landscape" alt="Storyboarding" class="w-full h-64 object-cover object-top rounded-lg mb-4">
+                    <h3 class="text-xl font-bold mb-2">Storyboarding</h3>
+                    <p class="text-gray-400">Planning the visual storytelling that will expose fossil fuel corruption through humor</p>
+                </div>
+            </div>
+            
+            <div class="mt-12">
+                <h3 class="text-2xl font-bold mb-6 text-center">Meet Our Creative Team</h3>
+                <div class="grid grid-cols-2 md:grid-cols-4 gap-6 max-w-4xl mx-auto">
+                    <div class="text-center">
+                        <div class="w-32 h-32 mx-auto bg-primary/20 rounded-full mb-4 overflow-hidden">
+                            <img src="https://readdy.ai/api/search-image?query=Professional%20headshot%20of%20a%20creative%20female%20animation%20director%20with%20glasses%20and%20short%20colored%20hair%2C%20smiling%20confidently%20at%20camera.%20The%20image%20should%20be%20a%20professional%20portrait%20with%20good%20lighting%20against%20a%20neutral%20background.&width=300&height=300&seq=12351&orientation=squarish" alt="Emma Rodriguez" class="w-full h-full object-cover object-top">
+                        </div>
+                        <h4 class="font-bold mb-1">Emma Rodriguez</h4>
+                        <p class="text-gray-400 text-sm">Director</p>
+                    </div>
+                    <div class="text-center">
+                        <div class="w-32 h-32 mx-auto bg-primary/20 rounded-full mb-4 overflow-hidden">
+                            <img src="https://readdy.ai/api/search-image?query=Professional%20headshot%20of%20a%20male%20lead%20animator%20with%20beard%20and%20casual%20attire%2C%20smiling%20at%20camera.%20The%20image%20should%20be%20a%20professional%20portrait%20with%20good%20lighting%20against%20a%20neutral%20background.&width=300&height=300&seq=12352&orientation=squarish" alt="David Chen" class="w-full h-full object-cover object-top">
+                        </div>
+                        <h4 class="font-bold mb-1">David Chen</h4>
+                        <p class="text-gray-400 text-sm">Lead Animator</p>
+                    </div>
+                    <div class="text-center">
+                        <div class="w-32 h-32 mx-auto bg-primary/20 rounded-full mb-4 overflow-hidden">
+                            <img src="https://readdy.ai/api/search-image?query=Professional%20headshot%20of%20a%20female%20scriptwriter%20with%20curly%20hair%20and%20casual%20professional%20attire%2C%20smiling%20at%20camera.%20The%20image%20should%20be%20a%20professional%20portrait%20with%20good%20lighting%20against%20a%20neutral%20background.&width=300&height=300&seq=12353&orientation=squarish" alt="Sophia Williams" class="w-full h-full object-cover object-top">
+                        </div>
+                        <h4 class="font-bold mb-1">Sophia Williams</h4>
+                        <p class="text-gray-400 text-sm">Lead Writer</p>
+                    </div>
+                    <div class="text-center">
+                        <div class="w-32 h-32 mx-auto bg-primary/20 rounded-full mb-4 overflow-hidden">
+                            <img src="https://readdy.ai/api/search-image?query=Professional%20headshot%20of%20a%20male%20environmental%20consultant%20with%20glasses%20and%20professional%20attire%2C%20smiling%20at%20camera.%20The%20image%20should%20be%20a%20professional%20portrait%20with%20good%20lighting%20against%20a%20neutral%20background.&width=300&height=300&seq=12354&orientation=squarish" alt="Marcus Johnson" class="w-full h-full object-cover object-top">
+                        </div>
+                        <h4 class="font-bold mb-1">Marcus Johnson</h4>
+                        <p class="text-gray-400 text-sm">Climate Advisor</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Testimonials -->
+    <section class="py-16 bg-black">
+        <div class="container mx-auto px-4">
+            <div class="text-center mb-12">
+                <h2 class="text-3xl md:text-4xl font-bold mb-4">What People Are Saying</h2>
+                <p class="text-xl text-gray-300 max-w-3xl mx-auto">Early feedback on our concept and teaser</p>
+            </div>
+            
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6 max-w-5xl mx-auto">
+                <div class="bg-gray-900 rounded-lg p-6">
+                    <div class="flex items-center mb-4">
+                        <div class="text-primary">
+                            <i class="ri-star-fill"></i>
+                            <i class="ri-star-fill"></i>
+                            <i class="ri-star-fill"></i>
+                            <i class="ri-star-fill"></i>
+                            <i class="ri-star-fill"></i>
+                        </div>
+                    </div>
+                    <p class="mb-6 text-gray-300">"Finally, climate comedy that doesn't make me feel guilty for existing! This is exactly the kind of satirical take we need to expose the real culprits behind the climate crisis."</p>
+                    <div class="flex items-center">
+                        <div class="w-12 h-12 bg-primary/20 rounded-full mr-4 overflow-hidden">
+                            <img src="https://readdy.ai/api/search-image?query=Professional%20headshot%20of%20a%20young%20environmental%20activist%20with%20casual%20attire%2C%20smiling%20at%20camera.%20The%20image%20should%20be%20a%20professional%20portrait%20with%20good%20lighting%20against%20a%20neutral%20background.&width=100&height=100&seq=12355&orientation=squarish" alt="Jamie Parker" class="w-full h-full object-cover object-top">
+                        </div>
+                        <div>
+                            <h4 class="font-bold">Jamie Parker</h4>
+                            <p class="text-gray-400 text-sm">Climate Activist</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="bg-gray-900 rounded-lg p-6">
+                    <div class="flex items-center mb-4">
+                        <div class="text-primary">
+                            <i class="ri-star-fill"></i>
+                            <i class="ri-star-fill"></i>
+                            <i class="ri-star-fill"></i>
+                            <i class="ri-star-fill"></i>
+                            <i class="ri-star-fill"></i>
+                        </div>
+                    </div>
+                    <p class="mb-6 text-gray-300">"The perfect blend of humor and truth. This project has the potential to change the climate conversation in a way that dry documentaries never could. Can't wait to see the full series!"</p>
+                    <div class="flex items-center">
+                        <div class="w-12 h-12 bg-primary/20 rounded-full mr-4 overflow-hidden">
+                            <img src="https://readdy.ai/api/search-image?query=Professional%20headshot%20of%20a%20female%20entertainment%20journalist%20with%20professional%20attire%2C%20smiling%20at%20camera.%20The%20image%20should%20be%20a%20professional%20portrait%20with%20good%20lighting%20against%20a%20neutral%20background.&width=100&height=100&seq=12356&orientation=squarish" alt="Rebecca Torres" class="w-full h-full object-cover object-top">
+                        </div>
+                        <div>
+                            <h4 class="font-bold">Rebecca Torres</h4>
+                            <p class="text-gray-400 text-sm">Entertainment Journalist</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="bg-gray-900 rounded-lg p-6">
+                    <div class="flex items-center mb-4">
+                        <div class="text-primary">
+                            <i class="ri-star-fill"></i>
+                            <i class="ri-star-fill"></i>
+                            <i class="ri-star-fill"></i>
+                            <i class="ri-star-fill"></i>
+                            <i class="ri-star-half-fill"></i>
+                        </div>
+                    </div>
+                    <p class="mb-6 text-gray-300">"Smart, funny, and desperately needed. The animation style is fantastic and the writing is sharp. This is exactly the kind of creative approach that can break through the noise on climate issues."</p>
+                    <div class="flex items-center">
+                        <div class="w-12 h-12 bg-primary/20 rounded-full mr-4 overflow-hidden">
+                            <img src="https://readdy.ai/api/search-image?query=Professional%20headshot%20of%20a%20male%20animation%20professor%20with%20glasses%20and%20casual%20professional%20attire%2C%20smiling%20at%20camera.%20The%20image%20should%20be%20a%20professional%20portrait%20with%20good%20lighting%20against%20a%20neutral%20background.&width=100&height=100&seq=12357&orientation=squarish" alt="Dr. Michael Lee" class="w-full h-full object-cover object-top">
+                        </div>
+                        <div>
+                            <h4 class="font-bold">Dr. Michael Lee</h4>
+                            <p class="text-gray-400 text-sm">Animation Professor</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="mt-12 text-center">
+                <p class="text-xl text-gray-300 mb-6">Featured in</p>
+                <div class="flex flex-wrap justify-center gap-8 max-w-4xl mx-auto">
+                    <div class="w-32 h-12 flex items-center justify-center text-gray-400">
+                        <i class="ri-netflix-fill ri-3x"></i>
+                    </div>
+                    <div class="w-32 h-12 flex items-center justify-center text-gray-400">
+                        <i class="ri-youtube-fill ri-3x"></i>
+                    </div>
+                    <div class="w-32 h-12 flex items-center justify-center text-gray-400">
+                        <i class="ri-vimeo-fill ri-3x"></i>
+                    </div>
+                    <div class="w-32 h-12 flex items-center justify-center text-gray-400">
+                        <i class="ri-film-fill ri-3x"></i>
+                    </div>
+                    <div class="w-32 h-12 flex items-center justify-center text-gray-400">
+                        <i class="ri-tv-2-fill ri-3x"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- FAQ Section -->
+    <section id="faq" class="py-16 bg-gray-900">
+        <div class="container mx-auto px-4">
+            <div class="text-center mb-12">
+                <h2 class="text-3xl md:text-4xl font-bold mb-4">Frequently Asked Questions</h2>
+                <p class="text-xl text-gray-300 max-w-3xl mx-auto">Everything you need to know about our climate comedy project</p>
+            </div>
+            
+            <div class="max-w-3xl mx-auto">
+                <div class="space-y-4">
+                    <div class="bg-gray-800 rounded-lg overflow-hidden">
+                        <button class="faq-toggle w-full text-left p-6 flex justify-between items-center">
+                            <span class="font-bold text-lg">What exactly is "My Pet Footprint"?</span>
+                            <i class="ri-arrow-down-s-line ri-lg"></i>
+                        </button>
+                        <div class="accordion-content px-6 pb-6">
+                            <p class="text-gray-300">My Pet Footprint is an animated comedy series that satirizes the fossil fuel industry's role in creating climate guilt while avoiding responsibility. It's a Greenpeace-presented project that uses humor to shift the climate conversation from individual blame to corporate accountability.</p>
+                        </div>
+                    </div>
+                    
+                    <div class="bg-gray-800 rounded-lg overflow-hidden">
+                        <button class="faq-toggle w-full text-left p-6 flex justify-between items-center">
+                            <span class="font-bold text-lg">How will my donation be used?</span>
+                            <i class="ri-arrow-down-s-line ri-lg"></i>
+                        </button>
+                        <div class="accordion-content px-6 pb-6">
+                            <p class="text-gray-300">Your donation will directly fund the production of the animated series, including artist salaries, animation costs, voice acting, sound design, and distribution. We're committed to transparency and will provide regular updates on how funds are being used throughout the production process.</p>
+                        </div>
+                    </div>
+                    
+                    <div class="bg-gray-800 rounded-lg overflow-hidden">
+                        <button class="faq-toggle w-full text-left p-6 flex justify-between items-center">
+                            <span class="font-bold text-lg">When will the series be released?</span>
+                            <i class="ri-arrow-down-s-line ri-lg"></i>
+                        </button>
+                        <div class="accordion-content px-6 pb-6">
+                            <p class="text-gray-300">We aim to release the pilot episode within 6 months of reaching our funding goal. The full season will follow approximately 8-10 months after that. Donors will get early access to episodes before public release.</p>
+                        </div>
+                    </div>
+                    
+                    <div class="bg-gray-800 rounded-lg overflow-hidden">
+                        <button class="faq-toggle w-full text-left p-6 flex justify-between items-center">
+                            <span class="font-bold text-lg">Is my donation tax-deductible?</span>
+                            <i class="ri-arrow-down-s-line ri-lg"></i>
+                        </button>
+                        <div class="accordion-content px-6 pb-6">
+                            <p class="text-gray-300">Yes, as this project is presented by Greenpeace, a registered non-profit organization, your donation is tax-deductible to the extent allowed by law. You will receive a receipt for your donation that can be used for tax purposes.</p>
+                        </div>
+                    </div>
+                    
+                    <div class="bg-gray-800 rounded-lg overflow-hidden">
+                        <button class="faq-toggle w-full text-left p-6 flex justify-between items-center">
+                            <span class="font-bold text-lg">How can I get involved beyond donating?</span>
+                            <i class="ri-arrow-down-s-line ri-lg"></i>
+                        </button>
+                        <div class="accordion-content px-6 pb-6">
+                            <p class="text-gray-300">There are many ways to support the project! You can share our campaign on social media, join our community forums to provide feedback on early concepts, volunteer your skills if you're an artist or animator, or simply help spread the word about the project's mission.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    <!-- Newsletter -->
+    <section class="py-16 bg-black">
+        <div class="container mx-auto px-4">
+            <div class="max-w-3xl mx-auto text-center">
+                <h2 class="text-3xl md:text-4xl font-bold mb-4">Stay Updated</h2>
+                <p class="text-xl text-gray-300 mb-8">Join our newsletter for production updates, behind-the-scenes content, and exclusive previews</p>
+                
+                <div class="flex flex-col md:flex-row gap-4">
+                    <input type="email" placeholder="Your email address" class="bg-gray-800 border-none text-white px-6 py-3 rounded-lg flex-grow">
+                    <button class="bg-primary text-white px-8 py-3 !rounded-button font-bold hover:bg-opacity-90 transition-all whitespace-nowrap">Subscribe</button>
+                </div>
+                
+                <div class="mt-8">
+                    <p class="text-gray-400 text-sm">By subscribing, you agree to receive updates about this project. We respect your privacy and will never share your information.</p>
+                </div>
+                
+                <div class="mt-12">
+                    <p class="text-xl font-bold mb-6">Follow Our Journey</p>
+                    <div class="flex justify-center gap-6">
+                        <a href="#" class="w-12 h-12 flex items-center justify-center bg-gray-800 rounded-full hover:bg-gray-700 transition-colors">
+                            <i class="ri-instagram-line text-white ri-lg"></i>
+                        </a>
+                        <a href="#" class="w-12 h-12 flex items-center justify-center bg-gray-800 rounded-full hover:bg-gray-700 transition-colors">
+                            <i class="ri-twitter-x-line text-white ri-lg"></i>
+                        </a>
+                        <a href="#" class="w-12 h-12 flex items-center justify-center bg-gray-800 rounded-full hover:bg-gray-700 transition-colors">
+                            <i class="ri-youtube-line text-white ri-lg"></i>
+                        </a>
+                        <a href="#" class="w-12 h-12 flex items-center justify-center bg-gray-800 rounded-full hover:bg-gray-700 transition-colors">
+                            <i class="ri-tiktok-line text-white ri-lg"></i>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="py-12 bg-gray-900">
+        <div class="container mx-auto px-4">
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-8">
+                <div>
+                    <a href="#" class="text-2xl font-['Pacifico'] text-white flex items-center gap-2 mb-4">
+                        <div class="w-8 h-8 flex items-center justify-center bg-primary rounded-full">
+                            <i class="ri-footprint-line text-white"></i>
+                        </div>
+                        My Pet Footprint
+                    </a>
+                    <p class="text-gray-400 mb-6">A satirical climate comedy exposing fossil fuel corruption through humor.</p>
+                    <p class="text-gray-400">Presented by Greenpeace</p>
+                </div>
+                
+                <div>
+                    <h3 class="text-lg font-bold mb-4">Quick Links</h3>
+                    <ul class="space-y-2">
+                        <li><a href="#" class="text-gray-400 hover:text-primary transition-colors">Home</a></li>
+                        <li><a href="#about" class="text-gray-400 hover:text-primary transition-colors">About</a></li>
+                        <li><a href="#watch" class="text-gray-400 hover:text-primary transition-colors">Watch Teaser</a></li>
+                        <li><a href="#donate" class="text-gray-400 hover:text-primary transition-colors">Donate</a></li>
+                        <li><a href="#faq" class="text-gray-400 hover:text-primary transition-colors">FAQ</a></li>
+                    </ul>
+                </div>
+                
+                <div>
+                    <h3 class="text-lg font-bold mb-4">Resources</h3>
+                    <ul class="space-y-2">
+                        <li><a href="#" class="text-gray-400 hover:text-primary transition-colors">Press Kit</a></li>
+                        <li><a href="#" class="text-gray-400 hover:text-primary transition-colors">Climate Facts</a></li>
+                        <li><a href="#" class="text-gray-400 hover:text-primary transition-colors">Production Blog</a></li>
+                        <li><a href="#" class="text-gray-400 hover:text-primary transition-colors">Partner With Us</a></li>
+                        <li><a href="#" class="text-gray-400 hover:text-primary transition-colors">Contact</a></li>
+                    </ul>
+                </div>
+                
+                <div>
+                    <h3 class="text-lg font-bold mb-4">Legal</h3>
+                    <ul class="space-y-2">
+                        <li><a href="#" class="text-gray-400 hover:text-primary transition-colors">Privacy Policy</a></li>
+                        <li><a href="#" class="text-gray-400 hover:text-primary transition-colors">Terms of Service</a></li>
+                        <li><a href="#" class="text-gray-400 hover:text-primary transition-colors">Cookie Policy</a></li>
+                        <li><a href="#" class="text-gray-400 hover:text-primary transition-colors">Donation Policy</a></li>
+                    </ul>
+                </div>
+            </div>
+            
+            <div class="mt-12 pt-8 border-t border-gray-800">
+                <div class="flex flex-col md:flex-row justify-between items-center">
+                    <p class="text-gray-400 text-sm mb-4 md:mb-0">© 2025 My Pet Footprint. All rights reserved.</p>
+                    <div class="flex items-center space-x-4">
+                        <div class="flex items-center text-gray-400">
+                            <i class="ri-visa-line ri-lg mr-2"></i>
+                            <i class="ri-mastercard-line ri-lg mr-2"></i>
+                            <i class="ri-paypal-line ri-lg mr-2"></i>
+                            <i class="ri-apple-fill ri-lg"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Floating Donate Button -->
+    <div class="floating-donate">
+        <button class="bg-primary text-white px-6 py-3 !rounded-button font-bold hover:bg-opacity-90 transition-all whitespace-nowrap shadow-lg flex items-center gap-2">
+            <i class="ri-heart-fill"></i> Donate Now
+        </button>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Custom range slider
+            const rangeInput = document.getElementById('custom-amount');
+            const amountDisplay = document.getElementById('amount-display');
+            
+            if (rangeInput && amountDisplay) {
+                rangeInput.addEventListener('input', function() {
+                    amountDisplay.textContent = '$' + this.value;
+                });
+            }
+            
+            // FAQ accordions
+            const faqToggles = document.querySelectorAll('.faq-toggle');
+            
+            faqToggles.forEach(toggle => {
+                toggle.addEventListener('click', function() {
+                    const content = this.nextElementSibling;
+                    content.classList.toggle('active');
+                    
+                    // Toggle icon
+                    const icon = this.querySelector('i');
+                    if (content.classList.contains('active')) {
+                        icon.classList.remove('ri-arrow-down-s-line');
+                        icon.classList.add('ri-arrow-up-s-line');
+                    } else {
+                        icon.classList.remove('ri-arrow-up-s-line');
+                        icon.classList.add('ri-arrow-down-s-line');
+                    }
+                });
+            });
+            
+            // Countdown timer
+            function updateCountdown() {
+                // This is just a demo countdown - would be replaced with actual end date
+                const now = new Date();
+                const endDate = new Date(now);
+                endDate.setDate(endDate.getDate() + 42);
+                
+                const diff = endDate - now;
+                
+                const days = Math.floor(diff / (1000 * 60 * 60 * 24));
+                const hours = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+                const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+                const seconds = Math.floor((diff % (1000 * 60)) / 1000);
+                
+                document.querySelectorAll('.countdown-item span')[0].textContent = days;
+                document.querySelectorAll('.countdown-item span')[1].textContent = hours;
+                document.querySelectorAll('.countdown-item span')[2].textContent = minutes;
+                document.querySelectorAll('.countdown-item span')[3].textContent = seconds;
+            }
+            
+            // Update countdown every second
+            updateCountdown();
+            setInterval(updateCountdown, 1000);
+            
+            // Video play button
+            const videoOverlay = document.querySelector('.video-overlay');
+            if (videoOverlay) {
+                videoOverlay.addEventListener('click', function() {
+                    // In a real implementation, this would play the video
+                    alert('Video would play here in the final implementation');
+                });
+            }
+        });
+    </script>
+</body>
+</html>
